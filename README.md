@@ -2,10 +2,11 @@
 
 Dans ce POK je compte découvrir JavaScript et me repolonger dans les cours de DevWeb de deuxième année. Pour ce faireje prévois de coder le jeu populaire Snake.
 
-{% lien %}
+### Liens utile
+
  - [Site Do_it](https://francoisbrucker.github.io/do-it/)
  - [Cours DevWeb](https://francoisbrucker.github.io/cours_informatique/enseignements/ecm/2A/option-web/)
-{% endlien %}
+
 
 Dans ce POK je compte découvrir JavaScript et me repolonger dans les cours de DevWeb de deuxième année. Pour ce faireje prévois de coder le jeu populaire Snake.
 

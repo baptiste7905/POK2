@@ -1,17 +1,17 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Paramètres du grille et du canvas
-const gridSize = 20;  // Chaque carré fait 20x20 pixels
-const canvasSize = canvas.width / gridSize;  // Nombre de cases sur le canvas
+// Paramètres de la grille et du canvas
+const gridSize = 20; 
+const canvasSize = canvas.height / gridSize;
 
 let snake = [{ x: 10, y: 10 }];
-let direction = { x: 0, y: 0 };  // Initialisation du serpent
+let direction = { x: 0, y: 0 };
 let food = { x: Math.floor(Math.random() * canvasSize), y: Math.floor(Math.random() * canvasSize) };
-
 let gameOver = false;
+let gameStarted = false;
 
-// Dessiner un carré sur le canvas
+// Dessiner un carré
 function drawSquare(x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
@@ -20,21 +20,19 @@ function drawSquare(x, y, color) {
 // Dessiner le serpent et la nourriture
 function drawGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   snake.forEach(segment => drawSquare(segment.x, segment.y, 'lime'));
-
   drawSquare(food.x, food.y, 'red');
 }
 
-// Mettre à jour la position du serpent
+// Mettre à jour le serpent
 function updateSnake() {
   const newHead = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-  // Si le serpent mange la nourriture
+  // Manger la nourriture
   if (newHead.x === food.x && newHead.y === food.y) {
     food = { x: Math.floor(Math.random() * canvasSize), y: Math.floor(Math.random() * canvasSize) };
   } else {
-    snake.pop();  // Retirer le dernier segment si pas de nourriture mangée
+    snake.pop();
   }
 
   snake.unshift(newHead);
@@ -44,7 +42,7 @@ function updateSnake() {
 function checkCollision() {
   const head = snake[0];
 
-  // Collision avec le mur
+  // Collision murale
   if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize) {
     gameOver = true;
   }
@@ -65,7 +63,7 @@ function checkCollision() {
   }
 }
 
-// Écouter les touches du clavier
+// Écouter les touches
 document.addEventListener('keydown', (event) => {
   switch (event.key) {
     case 'ArrowUp':
@@ -83,14 +81,20 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// Boucle principale du jeu
+// Démarrer le jeu avec Espace
+document.addEventListener('keydown', (event) => {
+  if (!gameStarted && event.key === ' ') {
+    gameStarted = true;
+    gameLoop();
+  }
+});
+
+// Boucle du jeu
 function gameLoop() {
   if (!gameOver) {
     updateSnake();
     checkCollision();
     drawGame();
+    requestAnimationFrame(gameLoop);
   }
 }
-
-// Exécuter la boucle toutes les 100 ms
-setInterval(gameLoop, 100);

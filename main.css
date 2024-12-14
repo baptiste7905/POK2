@@ -87,7 +87,7 @@ h1 {
     width: 100%;
     max-width: 4000px;
 }
-.game-board {
+.canvas {
     width: 100%;
     max-width: 800px;
     aspect-ratio: 1;
@@ -101,31 +101,8 @@ h1 {
     gap: 2px;
 }
 
-.ranking-board {
-    width: 100%;
-    max-width: 400px;
-    min-height: 800px;
-    aspect-ratio: 1;
-    background-color: var(--primary-color);
-    border-radius: 1rem;
-    padding: 1rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    display: grid;
-    grid-template-columns: repeat(20, 2fr);
-    grid-template-rows: repeat(20, 2fr);
-    gap: 2px;
-}
-
 
 @media (max-width: 640px) {
-    .game-container {
-        padding: 1rem;
-    }
-
-    .stats-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     h1 {
         font-size: 2rem;
     }
@@ -137,17 +114,4 @@ h1 {
     .stat-value {
         font-size: 1.25rem;
     }
-}
-
-
-.snake-cell {
-    background-color: var(--primary-color);
-    border-radius: 2px;
-    animation: pulse 0.5s infinite;
-}
-
-.food-cell {
-    background-color: #EF4444;
-    border-radius: 50%;
-    animation: pulse 0.5s infinite;
 }

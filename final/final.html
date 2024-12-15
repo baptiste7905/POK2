@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu Snake</title>
+  <link rel="stylesheet" href="final.css">
+</head>
+<body>
+  <header>
+    <h1>Snake</h1>
+    <p class="subtitle">Appuyez sur une flèche pour débuter</p>
+  </header>
+  
+  <div class="stats-container">
+    <div class="stat-box">
+      <span class="stat-label">Score</span>
+      <span class="stat-value" id="score">0</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">Meilleur score</span>
+      <span class="stat-value" id="highScore">0</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">Mode</span>
+      <span class="stat-value" id="mode"></span>
+    </div>
+  </div>
+  
+  <canvas id="gameCanvas" width="500" height="500"></canvas>
+  
+  <div id="gameModePopup" class="popup"> 
+    <div class="popup-content">
+      <h2>Choisissez un mode de jeu</h2>
+      <button class="popup-button" data-mode="Classic">Classic</button>
+      <button class="popup-button" data-mode="Speedup">Speedup</button>
+      <button class="popup-button" data-mode="Reverse">Reverse</button>
+    </div>
+  </div>
+  
+  <script src="mode.js"></script>
+</body>
+</html>

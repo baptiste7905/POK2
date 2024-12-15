@@ -1,20 +1,17 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Paramètres du grille et du canvas
-const gridSize = 20;  // Chaque carré fait 20x20 pixels
-const canvasSize = canvas.width / gridSize;  // Nombre de cases sur le canvas
 
+const gridSize = 20;  
+const canvasSize = canvas.width / gridSize; 
 let snake = [{ x: 10, y: 10 }];
-let direction = { x: 0, y: 0 };  // Initialisation du serpent
+let direction = { x: 0, y: 0 };  
 let food = { x: Math.floor(Math.random() * canvasSize), y: Math.floor(Math.random() * canvasSize) };
-
-let obstacles = []; // Pas d'obstacles au début
-
+let obstacles = [];
 let gameOver = false;
 let gameStarted = false;
-
 let score = 0;
+
 function updateScore() {
     document.getElementById("score").textContent = score;
 }
@@ -30,20 +27,17 @@ function updatehighScore() {
 let speed = 120;
 let gameInterval;
 function updateSpeed() {
-    speed = speed - 5 * score;
-    if (speed < 0) speed = 70; // Empêche la vitesse de descendre sous 70ms
-
-    clearInterval(gameInterval); // Annule l'intervalle précédent
-    gameInterval = setInterval(gameLoop, speed); // Démarre un nouvel intervalle avec la nouvelle vitesse
+    speed = speed - 0.1 * score;
+    if (speed < 50) speed = 50;
+    clearInterval(gameInterval);
+    gameInterval = setInterval(gameLoop, speed);
 }
 
-// Fonction pour dessiner un carré (utilisé pour les obstacles)
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
 }
 
-// Dessiner un cercle pour le serpent et la nourriture
 function drawCircle(x, y, color) {
     ctx.beginPath();
     ctx.arc(x * gridSize + gridSize / 2, y * gridSize + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
@@ -52,33 +46,22 @@ function drawCircle(x, y, color) {
     ctx.closePath();
 }
 
-// Dessiner le serpent, la nourriture et les obstacles
 function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Dessiner les obstacles
     obstacles.forEach(obstacle => drawSquare(obstacle.x, obstacle.y, 'white'));
-
-    // Dessiner chaque segment du serpent sous forme de cercle
     snake.forEach(segment => drawCircle(segment.x, segment.y, '#10B981'));
-
-    // Dessiner la nourriture sous forme de cercle
     drawCircle(food.x, food.y, 'red');
 }
 
-// Ajouter un nouvel obstacle
 function addObstacle() {
     let newObstacle;
     let isValidPosition = false;
 
-    // Générer un obstacle dans une position valide
     while (!isValidPosition) {
         newObstacle = {
             x: Math.floor(Math.random() * canvasSize),
             y: Math.floor(Math.random() * canvasSize)
         };
-
-        // Vérifier que l'obstacle ne chevauche pas le serpent, la nourriture ou un autre obstacle
         isValidPosition =
             !snake.some(segment => segment.x === newObstacle.x && segment.y === newObstacle.y) &&
             !(food.x === newObstacle.x && food.y === newObstacle.y) &&
@@ -88,45 +71,58 @@ function addObstacle() {
     obstacles.push(newObstacle);
 }
 
-// Mettre à jour la position du serpent
+function isPositionValid(x, y) {
+    return !snake.some(segment => segment.x === x && segment.y === y) &&
+           !obstacles.some(obstacle => obstacle.x === x && obstacle.y === y);
+}
+
+function generateFood() {
+    let newFood;
+    let isValid = false;
+
+    while (!isValid) {
+        newFood = {
+            x: Math.floor(Math.random() * canvasSize),
+            y: Math.floor(Math.random() * canvasSize)
+        };
+        isValid = isPositionValid(newFood.x, newFood.y);
+    }
+
+    return newFood;
+}
+
 function updateSnake() {
     const newHead = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-    // Si le serpent mange la nourriture
     if (newHead.x === food.x && newHead.y === food.y) {
-        food = { x: Math.floor(Math.random() * canvasSize), y: Math.floor(Math.random() * canvasSize) };
+        food = generateFood();
         score += 1;
         updateScore();
         updateSpeed();
 
-        // Ajouter un obstacle tous les 5 points
         if (score % 5 === 0) {
             addObstacle();
         }
     } else {
-        snake.pop();  // Retirer le dernier segment si pas de nourriture mangée
+        snake.pop();
     }
 
     snake.unshift(newHead);
 }
 
-// Vérifier les collisions
 function checkCollision() {
     const head = snake[0];
 
-    // Collision avec le mur
     if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize) {
         gameOver = true;
     }
 
-    // Collision avec le corps
     for (let i = 1; i < snake.length; i++) {
         if (head.x === snake[i].x && head.y === snake[i].y) {
             gameOver = true;
         }
     }
 
-    // Collision avec les obstacles
     obstacles.forEach(obstacle => {
         if (head.x === obstacle.x && head.y === obstacle.y) {
             gameOver = true;
@@ -138,18 +134,17 @@ function checkCollision() {
         snake = [{ x: 10, y: 10 }];
         direction = { x: 0, y: 0 };
         food = { x: Math.floor(Math.random() * canvasSize), y: Math.floor(Math.random() * canvasSize) };
-        obstacles = []; // Réinitialiser les obstacles
+        obstacles = [];
         gameOver = false;
         updatehighScore();
         score = 0;
-        speed = 120; // Réinitialiser la vitesse
+        speed = 120;
         clearInterval(gameInterval);
         gameInterval = setInterval(gameLoop, 120);
         updateScore();
     }
 }
 
-// Écouter les touches du clavier
 document.addEventListener('keydown', (event) => {
     switch (event.key) {
         case 'ArrowUp':
@@ -167,7 +162,6 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Boucle principale du jeu
 function gameLoop() {
     if (!gameOver) {
         updateSnake();
@@ -176,7 +170,6 @@ function gameLoop() {
     }
 }
 
-// Démarrer le jeu avec Espace
 document.addEventListener('keydown', (event) => {
     if (!gameStarted && event.key === ' ') {
         gameStarted = true;
@@ -184,5 +177,4 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Exécuter la boucle toutes les 100 ms (initialement)
 gameInterval = setInterval(gameLoop, 120);
